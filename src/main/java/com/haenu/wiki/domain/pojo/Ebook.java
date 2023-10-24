@@ -5,6 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 
 /**
@@ -12,12 +16,14 @@ import lombok.Data;
  * @TableName ebook
  */
 @TableName(value ="ebook")
+@ApiModel(description = "电子书实体")
 @Data
 public class Ebook implements Serializable {
     /**
      * id
      */
     @TableId(value = "id")
+    @ApiModelProperty("id")
     private Long id;
 
     /**
