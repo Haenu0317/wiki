@@ -46,8 +46,8 @@
       </a-menu>
     </a-layout-sider>
     <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-      <a-list item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }"  :data-source="ebooks">
-
+      <br><br>
+      <a-list item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }" :data-source="ebooks">
         <template #renderItem="{ item : ebook }">
           <a-list-item key="item.name">
             <template #actions>
@@ -111,4 +111,14 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+.ant-avatar {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 8%;
+  margin: 5px 0;
+}
+</style>
 
