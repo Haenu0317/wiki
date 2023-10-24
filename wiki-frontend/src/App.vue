@@ -2,16 +2,14 @@
   <a-layout>
       <the-header></the-header>
       <router-view/>
-    <a-layout-footer style="text-align: center">
-      Haenu's 电子书
-    </a-layout-footer>
+      <the-footer></the-footer>
   </a-layout>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
+import {ref} from 'vue';
 import TheHeader from '@/components/the-header.vue'
+import TheFooter from '@/components/the-footer.vue'
 
 const selectedKeys1 = ref<string[]>(['2']);
 const selectedKeys2 = ref<string[]>(['1']);
