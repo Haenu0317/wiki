@@ -10,7 +10,7 @@
         <a-sub-menu key="sub1">
           <template #title>
                 <span>
-                  <user-outlined />
+                  <user-outlined/>
                   subnav 1
                 </span>
           </template>
@@ -22,7 +22,7 @@
         <a-sub-menu key="sub2">
           <template #title>
                 <span>
-                  <laptop-outlined />
+                  <laptop-outlined/>
                   subnav 2
                 </span>
           </template>
@@ -34,7 +34,7 @@
         <a-sub-menu key="sub3">
           <template #title>
                 <span>
-                  <notification-outlined />
+                  <notification-outlined/>
                   subnav 3
                 </span>
           </template>
@@ -46,16 +46,35 @@
       </a-menu>
     </a-layout-sider>
     <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-    Content
-  </a-layout-content>
+      <pre>
+{{ebooks1}}
+      </pre>
+    </a-layout-content>
   </a-layout>
 </template>
 
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
+import {ref, defineComponent, onMounted, reactive, toRef} from 'vue';
+import {UserOutlined, LaptopOutlined, NotificationOutlined} from '@ant-design/icons-vue';
+import axios from 'axios';
+
 const selectedKeys1 = ref<string[]>(['2']);
 const selectedKeys2 = ref<string[]>(['1']);
 const openKeys = ref<string[]>(['sub1']);
+const ebooks = ref();
+const ebooks1 = reactive({
+  books: []
+});
+
+onMounted(() => {
+  console.log("onMounted")
+  axios.get("http://localhost:8081/user/list").then((response) => {
+    ebooks.value = response.data.data;
+    ebooks1.books = response.data.data;
+    console.log(ebooks.value);
+  })
+})
+
 </script>
+
