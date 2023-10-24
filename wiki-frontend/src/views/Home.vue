@@ -104,8 +104,8 @@ const actions: Record<string, any>[] = [
 
 
 onMounted(() => {
-  console.log("onMounted")
-  axios.get("http://localhost:8081/ebook/list").then((response) => {
+  console.log("onMounted2")
+  axios.get("/ebook/list").then((response) => {
     ebooks.value = response.data.data
   })
 })
