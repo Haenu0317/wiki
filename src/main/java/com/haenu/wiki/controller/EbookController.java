@@ -22,6 +22,13 @@ import java.util.List;
 public class EbookController {
     @Resource
     private EbookService ebookService;
+    @GetMapping("/list")
+    @ApiOperation("查询所有书籍")
+    public Result<List<EbookVo>> list(){
+        List<Ebook> ebooks = ebookService.list();
+        List<EbookVo> ebookVos = BeanUtil.copyToList(ebooks, EbookVo.class);
+        return Result.success(ebookVos);
+    }
 
     @PostMapping("/list")
     @ApiOperation("模糊匹配查询书籍")
@@ -33,5 +40,6 @@ public class EbookController {
         List<EbookVo> ebookVos = BeanUtil.copyToList(ebooks, EbookVo.class);
         return Result.success(ebookVos);
     }
+
 
 }

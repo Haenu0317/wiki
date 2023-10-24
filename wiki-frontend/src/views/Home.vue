@@ -46,33 +46,67 @@
       </a-menu>
     </a-layout-sider>
     <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-      <pre>
-{{ebooks1}}
-      </pre>
+      <a-list item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }"  :data-source="ebooks">
+
+        <template #renderItem="{ item : ebook }">
+          <a-list-item key="item.name">
+            <template #actions>
+          <span v-for="{ icon, text } in actions" :key="icon">
+            <component :is="icon" style="margin-right: 8px"/>
+            {{ text }}
+          </span>
+            </template>
+            <a-list-item-meta :description="ebook.description">
+              <template #title>
+                <a :href="ebook.href">{{ ebook.name }}</a>
+              </template>
+              <template #avatar>
+                <a-avatar :src="ebook.cover"/>
+              </template>
+            </a-list-item-meta>
+          </a-list-item>
+        </template>
+      </a-list>
     </a-layout-content>
   </a-layout>
 </template>
 
 
 <script lang="ts" setup>
-import {ref, defineComponent, onMounted, reactive, toRef} from 'vue';
-import {UserOutlined, LaptopOutlined, NotificationOutlined} from '@ant-design/icons-vue';
+import {onMounted, ref} from 'vue';
+import {
+  LaptopOutlined,
+  LikeOutlined,
+  MessageOutlined,
+  NotificationOutlined,
+  StarOutlined,
+  UserOutlined
+} from '@ant-design/icons-vue';
 import axios from 'axios';
 
-const selectedKeys1 = ref<string[]>(['2']);
 const selectedKeys2 = ref<string[]>(['1']);
 const openKeys = ref<string[]>(['sub1']);
 const ebooks = ref();
-const ebooks1 = reactive({
-  books: []
-});
+
+
+const pagination = {
+  onChange: (page: number) => {
+    console.log(page);
+  },
+  pageSize: 3,
+};
+
+const actions: Record<string, any>[] = [
+  {icon: StarOutlined, text: '156'},
+  {icon: LikeOutlined, text: '156'},
+  {icon: MessageOutlined, text: '2'},
+];
+
 
 onMounted(() => {
   console.log("onMounted")
-  axios.get("http://localhost:8081/user/list").then((response) => {
-    ebooks.value = response.data.data;
-    ebooks1.books = response.data.data;
-    console.log(ebooks.value);
+  axios.get("http://localhost:8081/ebook/list").then((response) => {
+    ebooks.value = response.data.data
   })
 })
 
