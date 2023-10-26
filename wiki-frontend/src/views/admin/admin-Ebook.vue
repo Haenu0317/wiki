@@ -50,7 +50,28 @@
 
           <template v-if="column.key === 'action'">
             <a-space wrap>
-              <a-button type="primary" @click="edit(record)">编辑</a-button>
+              <div>
+              <a-button type="primary" @click="edit(record)" >编辑</a-button>
+                <a-modal title="电子书表单" v-model:visible="modalVisible" :confirm-loading="modalLoading" @ok="handleOk">
+                  <a-form :model="ebooks" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+                    <a-form-item label="封面">
+                      <a-input v-model:value="ebooks.cover" />
+                    </a-form-item>
+                    <a-form-item label="名称">
+                      <a-input v-model:value="ebooks.name" />
+                    </a-form-item>
+                    <a-form-item label="分类一">
+                      <a-input v-model:value="ebooks.category1Id" />
+                    </a-form-item>
+                    <a-form-item label="分类二">
+                      <a-input v-model:value="ebooks.category2Id" />
+                    </a-form-item>
+                    <a-form-item label="描述">
+                      <a-input v-model:value="ebooks.description" type="textarea" />
+                    </a-form-item>
+                  </a-form>
+                </a-modal>
+              </div>
               <a-popconfirm
                   title="删除后不可恢复，确认删除?"
                   ok-text="是"
@@ -77,6 +98,7 @@ const param = ref();
 param.value = {};
 const loading = ref(false);
 const ebook = ref();
+const ebooks = ref({});
 const modalVisible = ref(false);
 const pagination = ref({
   current: 1,
@@ -84,7 +106,15 @@ const pagination = ref({
   total: 0
 });
 const data = ref();
+const modalLoading = ref<boolean>(false);
 
+const handleOk = () => {
+  modalLoading.value = true;
+  setTimeout(() => {
+    modalVisible.value = false;
+    modalLoading.value = false;
+  }, 2000);
+};
 onMounted(() => {
   handleQuery({
     page: 1,
@@ -163,9 +193,6 @@ const handleQuery = (params: any) => {
     if (data.data.code === 1) {
       ebook.value = data.data;
 
-      // 重置分页按钮
-      pagination.value.current = params.page;
-      pagination.value.total = data.content.total;
     } else {
       message.error(data.data.msg);
     }*/
@@ -196,9 +223,8 @@ const handleDelete = (id: number) => {
  * 编辑
  */
 const edit = (record: any) => {
-  /*modalVisible.value = true;
-  ebook.value = Tool.copy(record);
-  categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]*/
+  modalVisible.value = true;
+  ebooks.value = record;
 };
 
 /**
