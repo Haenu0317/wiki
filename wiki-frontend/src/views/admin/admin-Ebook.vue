@@ -80,13 +80,16 @@ const ebook = ref();
 const modalVisible = ref(false);
 const pagination = ref({
   current: 1,
-  pageSize: 2,
+  pageSize: 4,
   total: 0
 });
 const data = ref();
 
 onMounted(() => {
-  handleQuery({});
+  handleQuery({
+    page: 1,
+    size: pagination.value.pageSize
+  });
 });
 
 const columns = [
@@ -149,7 +152,12 @@ const handleQuery = (params: any) => {
   loading.value = true;
   // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
   ebook.value = [];
-  axios.get("/ebook/list", params).then((response) => {
+  axios.get("/ebook/list",{
+    params : {
+      page: params.page,
+      size: params.size
+    }
+  }).then((response) => {
     loading.value = false;
     /*const data = response.data;
     if (data.data.code === 1) {
@@ -162,9 +170,10 @@ const handleQuery = (params: any) => {
       message.error(data.data.msg);
     }*/
     const data = response.data;
-    ebook.value = data.data;
+    ebook.value = data.data.records;
     console.log(ebook.value);
     pagination.value.current = params.page;
+    pagination.value.total = data.data.total;
   });
 };
 
