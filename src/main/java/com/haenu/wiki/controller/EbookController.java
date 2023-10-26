@@ -29,9 +29,15 @@ public class EbookController {
     @Resource
     private EbookService ebookService;
 
+    @GetMapping("/all")
+    @ApiOperation("查询所有书籍")
+    public Result<List<EbookVo>> getAll() {
+        return Result.success(BeanUtil.copyToList(ebookService.list(),EbookVo.class));
+    }
+
 
     @GetMapping("/list")
-    @ApiOperation("查询书籍")
+    @ApiOperation("分页查询书籍/模糊查找")
     public Result<PageResult<EbookVo>> list(EbookPageQueryDto ebookPageQueryDto) {
         LambdaQueryWrapper<Ebook> queryWrapper = Wrappers.lambdaQuery();
         if (StrUtil.isNotBlank(ebookPageQueryDto.getName())) {
