@@ -61,6 +61,8 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook>
             update(BeanUtil.copyProperties(ebookSaveDto, Ebook.class), updateWrapper);
         }
     }
+
+
 }
 
 
