@@ -7,6 +7,8 @@ import com.haenu.wiki.domain.pojo.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.haenu.wiki.domain.vo.CategoryQueryVO;
 
+import java.util.List;
+
 /**
 * @author Haenu0317
 * @description 针对表【category(分类)】的数据库操作Service
@@ -26,4 +28,10 @@ public interface CategoryService extends IService<Category> {
      * @param categorySaveDto
      */
     void saveCategory(CategorySaveDTO categorySaveDto);
+
+    /**
+     * 查询所有分类
+     * @return
+     */
+    List<Category> listCategory();
 }

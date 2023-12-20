@@ -1,6 +1,7 @@
 package com.haenu.wiki.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -59,6 +60,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
                     .eq(Category::getId, categorySaveDto.getId());
             update(BeanUtil.copyProperties(categorySaveDto, Category.class), updateWrapper);
         }
+    }
+
+    /**
+     * 查询所有分类
+     *
+     * @return
+     */
+    @Override
+    public List<Category> listCategory() {
+        LambdaQueryWrapper<Category> wrapper = Wrappers.lambdaQuery(Category.class)
+                .orderByAsc(Category::getSort);
+        return list(wrapper);
     }
 }
 

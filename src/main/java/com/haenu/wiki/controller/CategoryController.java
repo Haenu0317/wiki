@@ -28,7 +28,7 @@ public class CategoryController {
     @GetMapping("/all")
     @ApiOperation("查询所有分类")
     public Result<List<CategoryQueryVO>> getAll() {
-        List<Category> categories = categoryService.list();
+        List<Category> categories = categoryService.listCategory();
         List<CategoryQueryVO> categoryQueryVOS = BeanUtil.copyToList(categories, CategoryQueryVO.class);
         return Result.success(categoryQueryVOS);
     }
