@@ -8,9 +8,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.haenu.wiki.common.result.PageResult;
-import com.haenu.wiki.domain.dto.EbookPageQueryDto;
+import com.haenu.wiki.domain.dto.EbookPageQueryDTO;
 import com.haenu.wiki.domain.pojo.Ebook;
-import com.haenu.wiki.domain.pojo.EbookSaveDto;
+import com.haenu.wiki.domain.pojo.EbookSaveDTO;
 import com.haenu.wiki.domain.vo.EbookVo;
 import com.haenu.wiki.mapper.EbookMapper;
 import com.haenu.wiki.service.EbookService;
@@ -35,7 +35,7 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook>
      * @return
      */
     @Override
-    public PageResult<EbookVo> getList(EbookPageQueryDto ebookPageQueryDto) {
+    public PageResult<EbookVo> getList(EbookPageQueryDTO ebookPageQueryDto) {
         LambdaQueryWrapper<Ebook> queryWrapper = Wrappers.lambdaQuery();
         if (StrUtil.isNotBlank(ebookPageQueryDto.getName())) {
             queryWrapper.like(Ebook::getName, ebookPageQueryDto.getName());
@@ -51,7 +51,7 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook>
      * @param ebookSaveDto
      */
     @Override
-    public void saveEbook(EbookSaveDto ebookSaveDto) {
+    public void saveEbook(EbookSaveDTO ebookSaveDto) {
         //判断是新增还是更新
         if (ebookSaveDto.getId() == null) {
             save(BeanUtil.copyProperties(ebookSaveDto, Ebook.class));

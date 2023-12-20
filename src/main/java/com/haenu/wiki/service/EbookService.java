@@ -1,13 +1,11 @@
 package com.haenu.wiki.service;
 
 import com.haenu.wiki.common.result.PageResult;
-import com.haenu.wiki.domain.dto.EbookPageQueryDto;
+import com.haenu.wiki.domain.dto.EbookPageQueryDTO;
 import com.haenu.wiki.domain.pojo.Ebook;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.haenu.wiki.domain.pojo.EbookSaveDto;
+import com.haenu.wiki.domain.pojo.EbookSaveDTO;
 import com.haenu.wiki.domain.vo.EbookVo;
-
-import java.util.List;
 
 /**
 * @author Haenu0317
@@ -20,11 +18,11 @@ public interface EbookService extends IService<Ebook> {
      * @param ebookPageQueryDto
      * @return
      */
-    PageResult<EbookVo> getList(EbookPageQueryDto ebookPageQueryDto);
+    PageResult<EbookVo> getList(EbookPageQueryDTO ebookPageQueryDto);
 
     /**
      * 保存电子书
      * @param ebookSaveDto
      */
-    void saveEbook(EbookSaveDto ebookSaveDto);
+    void saveEbook(EbookSaveDTO ebookSaveDto);
 }

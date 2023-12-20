@@ -6,7 +6,7 @@ import lombok.Data;
  *
  */
 @Data
-public class EbookDto {
+public class EbookDTO {
     private Long id;
     private String name;
 }

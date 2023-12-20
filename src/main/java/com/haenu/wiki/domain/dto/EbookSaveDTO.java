@@ -1,15 +1,11 @@
 package com.haenu.wiki.domain.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -19,7 +15,7 @@ import java.io.Serializable;
  */
 @ApiModel(description = "电子书保存实体类")
 @Data
-public class EbookSaveDto implements Serializable {
+public class EbookSaveDTO implements Serializable {
     /**
      * id
      */
