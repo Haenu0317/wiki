@@ -1,21 +1,20 @@
 package com.haenu.wiki.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.haenu.wiki.common.result.PageResult;
 import com.haenu.wiki.common.result.Result;
 import com.haenu.wiki.domain.dto.EbookPageQueryDto;
-import com.haenu.wiki.domain.pojo.Ebook;
 import com.haenu.wiki.domain.pojo.EbookSaveDto;
 import com.haenu.wiki.domain.vo.EbookVo;
 import com.haenu.wiki.service.EbookService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -35,7 +34,8 @@ public class EbookController {
 
     @GetMapping("/list")
     @ApiOperation("分页查询书籍/模糊查找")
-    public Result<PageResult<EbookVo>> list(EbookPageQueryDto ebookPageQueryDto) {
+    public Result<PageResult<EbookVo>> list(@Valid EbookPageQueryDto ebookPageQueryDto) {
+        log.info("ebookPageQueryDto:{}", ebookPageQueryDto);
         PageResult<EbookVo> list = ebookService.getList(ebookPageQueryDto);
         return Result.success(list);
     }
