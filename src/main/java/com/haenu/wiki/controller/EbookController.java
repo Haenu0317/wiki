@@ -47,5 +47,11 @@ public class EbookController {
         return Result.success();
     }
 
+    @DeleteMapping("/delete/{id}")
+    @ApiOperation("删除书籍")
+    public Result<Void> delete(@PathVariable Long id) {
+        ebookService.removeById(id);
+        return Result.success();
+    }
 
 }
