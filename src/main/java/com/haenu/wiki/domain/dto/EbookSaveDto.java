@@ -7,6 +7,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -26,6 +29,7 @@ public class EbookSaveDto implements Serializable {
     /**
      * 名称
      */
+    @NotBlank(message = "名称不能为空")
     private String name;
 
     /**

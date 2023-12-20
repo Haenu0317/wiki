@@ -42,7 +42,7 @@ public class EbookController {
 
     @PostMapping("/save")
     @ApiOperation("新增书籍")
-    public Result<Void> save(@RequestBody EbookSaveDto ebookSaveDto) {
+    public Result<Void> save(@Valid @RequestBody EbookSaveDto ebookSaveDto) {
         ebookService.saveEbook(ebookSaveDto);
         return Result.success();
     }
