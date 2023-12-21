@@ -4,9 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.haenu.wiki.common.exception.BusinessException;
 import com.haenu.wiki.common.result.PageResult;
 import com.haenu.wiki.domain.dto.UserLoginDTO;
 import com.haenu.wiki.domain.dto.UserQueryDTO;
@@ -26,6 +28,8 @@ import org.springframework.util.DigestUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static com.haenu.wiki.common.exception.BusinessExceptionCode.USER_LOGIN_NAME_EXIST;
 
 /**
  * @author Haenu0317
@@ -105,10 +109,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public void register(UserSaveDTO req) {
-        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         User user = new User();
         BeanUtil.copyProperties(req, user);
-        save(user);
+        if (req.getId() == null) {
+            LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
+                    .eq(User::getLoginName, req.getLoginName());
+            User userDB = getOne(wrapper);
+            if (userDB != null) {
+                log.info("用户名已存在，用户名：{}", req.getLoginName());
+                throw new BusinessException(USER_LOGIN_NAME_EXIST);
+            }
+            req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+            save(user);
+        } else {
+            LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate(User.class)
+                    .set(req.getPassword() != null, User::getPassword, DigestUtils.md5DigestAsHex(req.getPassword().getBytes()))
+                    .set(req.getName() != null, User::getName, req.getName())
+                    .eq(User::getId, req.getId());
+            update(wrapper);
+        }
     }
 
     /**
