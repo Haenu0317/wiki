@@ -152,6 +152,14 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
         }
         throw new RuntimeException("点赞接口出错");
     }
+
+    /**
+     * 更新电子书信息
+     */
+    @Override
+    public void updateEbookInfo() {
+        docMapperCust.updateEbookInfo();
+    }
 }
 
 

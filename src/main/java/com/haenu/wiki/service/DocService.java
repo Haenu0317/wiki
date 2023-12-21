@@ -46,4 +46,8 @@ public interface DocService extends IService<Doc> {
      * @param id
      */
     Boolean vote(Long id);
+
+
+
+    void updateEbookInfo();
 }
