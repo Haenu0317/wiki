@@ -102,7 +102,7 @@
       const ebooks = ref();
       const pagination = ref({
         current: 1,
-        pageSize: 10,
+        pageSize: 5,
         total: 0
       });
       const loading = ref(false);
@@ -157,7 +157,7 @@
           loading.value = false;
           const data = response.data;
           if (data.success) {
-            ebooks.value = data.content.list;
+            ebooks.value = data.content.records;
 
             // 重置分页按钮
             pagination.value.current = params.page;

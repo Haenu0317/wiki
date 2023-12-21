@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class EbookVo {
+    private String id;
 
     private String name;
 
