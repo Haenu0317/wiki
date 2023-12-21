@@ -174,8 +174,6 @@
       const handleModalOk = () => {
         modalLoading.value = true;
 
-        user.value.password = hexMd5(user.value.password + KEY);
-
         axios.post("/user/save", user.value).then((response) => {
           modalLoading.value = false;
           const data = response.data; // data = commonResp
@@ -212,6 +210,7 @@
       const handleDelete = (id: number) => {
         axios.delete("/user/delete/" + id).then((response) => {
           const data = response.data; // data = commonResp
+          console.log('+++++++++++++' + id)
           if (data.success) {
             // 重新加载列表
             handleQuery({
