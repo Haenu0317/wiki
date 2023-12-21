@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.haenu.wiki.common.exception.BusinessExceptionCode.LOGIN_USER_ERROR;
 import static com.haenu.wiki.common.exception.BusinessExceptionCode.USER_LOGIN_NAME_EXIST;
+import static com.haenu.wiki.constant.RedisConstant.TOKEN_PREFIX;
 
 /**
  * @author Haenu0317
@@ -54,7 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public PageResult<UserQueryVo> listByPage(UserQueryDTO req) {
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
-                .like(req.getLoginName() != null,User::getLoginName, req.getLoginName());
+                .like(req.getLoginName() != null, User::getLoginName, req.getLoginName());
         Page<User> page = page(new Page<>(req.getPage(), req.getSize()), wrapper);
         List<UserQueryVo> userQueryVos = page.getRecords().stream().map(user -> {
             UserQueryVo userQueryVo = new UserQueryVo();
@@ -86,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         UserLoginVO userLoginVO = new UserLoginVO();
         BeanUtil.copyProperties(user, userLoginVO);
         userLoginVO.setToken(token);
-        stringRedisTemplate.opsForValue().set(token, JSONObject.toJSONString(userLoginVO), 3600 * 24, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(TOKEN_PREFIX + token, JSONObject.toJSONString(userLoginVO), 3600 * 24, TimeUnit.SECONDS);
         return userLoginVO;
     }
 

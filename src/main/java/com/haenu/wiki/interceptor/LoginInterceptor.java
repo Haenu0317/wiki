@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.haenu.wiki.common.exception.BusinessExceptionCode.USER_NOT_LOGIN;
+import static com.haenu.wiki.constant.RedisConstant.TOKEN_PREFIX;
 
 /**
  * 拦截器：Spring框架特有的，常用于登录校验，权限校验，请求日志打印
@@ -51,7 +52,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
-        Object object = stringRedisTemplate.opsForValue().get(token);
+        Object object = stringRedisTemplate.opsForValue().get(TOKEN_PREFIX + token);
         if (object == null) {
             log.warn("token无效，请求被拦截");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
