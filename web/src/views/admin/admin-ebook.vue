@@ -252,6 +252,7 @@
           const data = response.data;
           if (data.success) {
             categorys = data.content;
+            console.log(categorys)
             console.log("原始数组：", categorys);
 
             level1.value = [];

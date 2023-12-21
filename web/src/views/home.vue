@@ -19,9 +19,7 @@
             <MailOutlined /><span>{{child.name}}</span>
           </a-menu-item>
         </a-sub-menu>
-        <a-menu-item key="tip" :disabled="true">
-          <span>以上菜单在分类管理配置</span>
-        </a-menu-item>
+
       </a-menu>
     </a-layout-sider>
     <a-layout-content

@@ -18,12 +18,7 @@
       <a-menu-item key="/admin/category" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/category">分类管理</router-link>
       </a-menu-item>
-      <a-menu-item key="/about">
-        <router-link to="/about">关于我们</router-link>
-      </a-menu-item>
-      <a-menu-item key="/aliyun">
-        <router-link to="/aliyun">阿里云优惠</router-link>
-      </a-menu-item>
+
       <a-popconfirm
         title="确认退出登录?"
         ok-text="是"
@@ -90,7 +85,8 @@
       const login = () => {
         console.log("开始登录");
         loginModalLoading.value = true;
-        loginUser.value.password = hexMd5(loginUser.value.password + KEY);
+        //loginUser.value.password = hexMd5(loginUser.value.password + KEY);
+        console.log('------------' + loginUser.value.password)
         axios.post('/user/login', loginUser.value).then((response) => {
           loginModalLoading.value = false;
           const data = response.data;

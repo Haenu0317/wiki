@@ -145,7 +145,7 @@
           loading.value = false;
           const data = response.data;
           if (data.success) {
-            users.value = data.content.list;
+            users.value = data.content.records;
 
             // 重置分页按钮
             pagination.value.current = params.page;

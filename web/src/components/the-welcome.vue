@@ -1,17 +1,5 @@
 <template>
   <div>
-    <div class="tip">
-      <div><b>示例网站说明：</b></div>
-      <div>1. 统计数据是真实的，一分钟左右延时。</div>
-      <div>2. 有文档被点赞会收到实时通知哦！</div>
-      <div>3. 左侧菜单是动态加载的，登录后在分类管理可配置</div>
-      <div>4. 文档树可无限级扩展，支持文字、图片、<b>视频</b></div>
-      <div>你也想有个WIKI知识库吗？，<b>配套视频课程</b>：
-        <a href="https://coding.imooc.com/class/474.html" target="_blank">
-        《SpringBoot知识体系+Vue3全家桶 前后端分离 实战WIKI知识库系统》
-        </a>
-      </div>
-    </div>
 
     <a-row>
       <a-col :span="24">
