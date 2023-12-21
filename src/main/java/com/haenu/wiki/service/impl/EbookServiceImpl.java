@@ -37,9 +37,10 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook>
     @Override
     public PageResult<EbookVo> getList(EbookPageQueryDTO ebookPageQueryDto) {
         LambdaQueryWrapper<Ebook> queryWrapper = Wrappers.lambdaQuery();
-        if (StrUtil.isNotBlank(ebookPageQueryDto.getName())) {
-            queryWrapper.like(Ebook::getName, ebookPageQueryDto.getName());
-        }
+
+        queryWrapper.like(StrUtil.isNotBlank(ebookPageQueryDto.getName()), Ebook::getName, ebookPageQueryDto.getName());
+        queryWrapper.eq(ebookPageQueryDto.getCategoryId2() != null, Ebook::getCategory2Id, ebookPageQueryDto.getCategoryId2());
+
         Page<Ebook> page = page(new Page<>(ebookPageQueryDto.getPage(), ebookPageQueryDto.getSize()), queryWrapper);
         List<EbookVo> ebookVoList = BeanUtil.copyToList(page.getRecords(), EbookVo.class);
         return new PageResult<>(page.getTotal(), ebookVoList);

@@ -9,6 +9,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class EbookPageQueryDTO extends PageReq {
+    private Long id;
 
     private String name;
+
+    private Long categoryId2;
 }
