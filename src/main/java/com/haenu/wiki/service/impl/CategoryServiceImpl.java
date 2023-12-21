@@ -1,6 +1,7 @@
 package com.haenu.wiki.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -10,14 +11,17 @@ import com.haenu.wiki.common.result.PageResult;
 import com.haenu.wiki.domain.dto.CategoryPageQueryDTO;
 import com.haenu.wiki.domain.dto.CategorySaveDTO;
 import com.haenu.wiki.domain.pojo.Category;
-import com.haenu.wiki.domain.pojo.Category;
 import com.haenu.wiki.domain.vo.CategoryQueryVO;
 import com.haenu.wiki.mapper.CategoryMapper;
 import com.haenu.wiki.service.CategoryService;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.haenu.wiki.constant.RedisConstant.CATEGORY_PREFIX;
 
 /**
  * @author Haenu0317
@@ -27,6 +31,9 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         implements CategoryService {
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 分页查询分组
@@ -60,6 +67,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
                     .eq(Category::getId, categorySaveDto.getId());
             update(BeanUtil.copyProperties(categorySaveDto, Category.class), updateWrapper);
         }
+        //更新缓存
+        stringRedisTemplate.delete(CATEGORY_PREFIX);
+        searchDbAndUpdateRedis();
     }
 
     /**
@@ -69,9 +79,28 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
      */
     @Override
     public List<Category> listCategory() {
+        String json = stringRedisTemplate.opsForValue().get(CATEGORY_PREFIX);
+        if (json == null) {
+            //缓存中没有数据，从数据库中查询
+            List<Category> categories = searchDbAndUpdateRedis();
+            return categories;
+        }else {
+            //缓存中有数据，直接返回
+            return JSON.parseArray(json, Category.class);
+        }
+    }
+
+    /**
+     * 更新缓存
+     * @return
+     */
+    private List<Category> searchDbAndUpdateRedis() {
         LambdaQueryWrapper<Category> wrapper = Wrappers.lambdaQuery(Category.class)
                 .orderByAsc(Category::getSort);
-        return list(wrapper);
+        List<Category> categories = list(wrapper);
+        //将数据存入缓存
+        stringRedisTemplate.opsForValue().set(CATEGORY_PREFIX, JSON.toJSONString(categories));
+        return categories;
     }
 }
 

@@ -9,4 +9,7 @@ package com.haenu.wiki.constant;
  */
 public class RedisConstant {
     public static final String TOKEN_PREFIX = "wiki:";
+    public static final String USER_VOTE = "wiki:vote:";
+    public static final String CATEGORY_PREFIX = "wiki:category:";
+
 }
