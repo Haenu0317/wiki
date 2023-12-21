@@ -13,6 +13,7 @@ import com.haenu.wiki.domain.pojo.Doc;
 import com.haenu.wiki.domain.vo.DocQueryVO;
 import com.haenu.wiki.mapper.ContentMapper;
 import com.haenu.wiki.mapper.DocMapper;
+import com.haenu.wiki.mapper.DocMapperCust;
 import com.haenu.wiki.service.DocService;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,8 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
     @Resource
     private ContentMapper contentMapper;
 
+    @Resource
+    private DocMapperCust docMapperCust;
 
     /**
      * 根据电子书id查询文档列表
@@ -96,9 +99,11 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
     @Override
     public String findContent(Long id) {
         Content content = contentMapper.selectById(id);
-        if (content != null){
+        //文档阅读数增加
+        docMapperCust.increaseViewCount(id);
+        if (content != null) {
             return content.getContent();
-        }else {
+        } else {
             return "";
         }
     }
