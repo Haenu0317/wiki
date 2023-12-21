@@ -40,4 +40,10 @@ public interface DocService extends IService<Doc> {
      * @return
      */
     String findContent(Long id);
+
+    /**
+     * 点赞
+     * @param id
+     */
+    Boolean vote(Long id);
 }

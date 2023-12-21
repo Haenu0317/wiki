@@ -63,4 +63,10 @@ public class DocController {
         String content = docService.findContent(id);
         return Result.success(content);
     }
+
+    @GetMapping("/vote/{id}")
+    @ApiOperation("点赞")
+    public Result<Void> vote(@PathVariable Long id) {
+        return docService.vote(id) ? Result.success() : Result.error("点赞失败");
+    }
 }

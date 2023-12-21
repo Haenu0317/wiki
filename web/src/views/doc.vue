@@ -123,7 +123,7 @@
           if (data.success) {
             doc.value.voteCount++;
           } else {
-            message.error(data.message);
+            doc.value.voteCount--;
           }
         });
       };
