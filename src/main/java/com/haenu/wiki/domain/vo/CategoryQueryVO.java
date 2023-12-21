@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CategoryQueryVO {
-    private Long id;
+    private String id;
 
     private Long parent;
 
