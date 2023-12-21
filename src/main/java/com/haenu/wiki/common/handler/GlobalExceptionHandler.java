@@ -1,5 +1,6 @@
 package com.haenu.wiki.common.handler;
 
+import com.haenu.wiki.common.exception.BusinessException;
 import com.haenu.wiki.common.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -38,15 +39,12 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
-    /*@ExceptionHandler(value = BusinessException.class)
+    @ExceptionHandler(value = BusinessException.class)
     @ResponseBody
-    public CommonResp validExceptionHandler(BusinessException e) {
-        CommonResp commonResp = new CommonResp();
-        LOG.warn("业务异常：{}", e.getCode().getDesc());
-        commonResp.setSuccess(false);
-        commonResp.setMessage(e.getCode().getDesc());
-        return commonResp;
-    }*/
+    public Result<Void> validExceptionHandler(BusinessException e) {
+        log.warn("业务异常：{}", e.getCode().getDesc());
+        return Result.error(e.getCode().getDesc());
+    }
 
     /**
      * 校验异常统一处理
