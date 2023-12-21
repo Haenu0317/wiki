@@ -54,7 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public PageResult<UserQueryVo> listByPage(UserQueryDTO req) {
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
-                .eq(User::getLoginName, req.getLoginName());
+                .like(req.getLoginName() != null,User::getLoginName, req.getLoginName());
         Page<User> page = page(new Page<>(req.getPage(), req.getSize()), wrapper);
         List<UserQueryVo> userQueryVos = page.getRecords().stream().map(user -> {
             UserQueryVo userQueryVo = new UserQueryVo();
@@ -120,7 +120,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 log.info("用户名已存在，用户名：{}", req.getLoginName());
                 throw new BusinessException(USER_LOGIN_NAME_EXIST);
             }
-            req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+            user.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
             save(user);
         } else {
             LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate(User.class)
