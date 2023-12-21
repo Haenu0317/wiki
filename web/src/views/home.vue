@@ -125,12 +125,12 @@ export default defineComponent({
       axios.get("/ebook/list", {
         params: {
           page: 1,
-          size: 1000,
+          size: 100,
           categoryId2: categoryId2
         }
       }).then((response) => {
         const data = response.data;
-        ebooks.value = data.content.list;
+        ebooks.value = data.content.records;
         // ebooks1.books = data.content;
       });
     };
