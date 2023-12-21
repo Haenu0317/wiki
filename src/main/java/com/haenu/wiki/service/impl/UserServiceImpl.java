@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.haenu.wiki.common.exception.BusinessExceptionCode.LOGIN_USER_ERROR;
 import static com.haenu.wiki.common.exception.BusinessExceptionCode.USER_LOGIN_NAME_EXIST;
 
 /**
@@ -78,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = getOne(wrapper);
         if (user == null) {
             log.info("用户名或密码错误，用户名：{}", req.getLoginName());
-            throw new RuntimeException("用户名或密码错误");
+            throw new BusinessException(LOGIN_USER_ERROR);
         }
         String token = UUID.randomUUID().toString();
         log.info("生成单点登录token：{}，并放入redis中", token);
