@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.haenu.wiki.domain.pojo.User">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="login_name" column="login_name" jdbcType="VARCHAR"/>
+            <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="CHAR"/>
     </resultMap>

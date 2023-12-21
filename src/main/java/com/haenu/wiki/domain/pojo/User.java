@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.Data;
 
 /**
@@ -19,22 +17,25 @@ public class User implements Serializable {
     /**
      * ID
      */
-    @TableId
+    @TableId(value = "id")
     private Long id;
 
     /**
      * 登陆名
      */
+    @TableField(value = "login_name")
     private String loginName;
 
     /**
      * 昵称
      */
+    @TableField(value = "name")
     private String name;
 
     /**
      * 密码
      */
+    @TableField(value = "password")
     private String password;
 
     @TableField(exist = false)
