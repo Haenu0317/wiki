@@ -91,6 +91,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
     }
 
     /**
+     * 删除分类
+     *
+     * @param id
+     */
+    @Override
+    public void removeByID(Long id) {
+        removeById(id);
+        //更新缓存
+        stringRedisTemplate.delete(CATEGORY_PREFIX);
+    }
+
+    /**
      * 更新缓存
      * @return
      */

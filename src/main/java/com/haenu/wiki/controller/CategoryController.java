@@ -52,7 +52,7 @@ public class CategoryController {
     @DeleteMapping("/delete/{id}")
     @ApiOperation("删除分类")
     public Result<Void> delete(@PathVariable Long id) {
-        categoryService.removeById(id);
+        categoryService.removeByID(id);
         return Result.success();
     }
 

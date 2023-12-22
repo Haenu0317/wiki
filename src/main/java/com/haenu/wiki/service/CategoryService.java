@@ -34,4 +34,10 @@ public interface CategoryService extends IService<Category> {
      * @return
      */
     List<Category> listCategory();
+
+    /**
+     * 删除分类
+     * @param id
+     */
+    void removeByID(Long id);
 }
