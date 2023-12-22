@@ -5,19 +5,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.haenu.wiki.common.exception.BusinessException;
 import com.haenu.wiki.common.result.PageResult;
 import com.haenu.wiki.domain.dto.DocQueryDTO;
 import com.haenu.wiki.domain.dto.DocSaveDTO;
 import com.haenu.wiki.domain.pojo.Content;
 import com.haenu.wiki.domain.pojo.Doc;
 import com.haenu.wiki.domain.vo.DocQueryVO;
-import com.haenu.wiki.domain.vo.UserLoginVO;
 import com.haenu.wiki.mapper.ContentMapper;
 import com.haenu.wiki.mapper.DocMapper;
 import com.haenu.wiki.mapper.DocMapperCust;
 import com.haenu.wiki.service.DocService;
 import com.haenu.wiki.util.LoginUserContext;
+import com.haenu.wiki.websocket.WebSocketServer;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.haenu.wiki.common.exception.BusinessExceptionCode.VOTE_REPEAT;
 import static com.haenu.wiki.constant.RedisConstant.USER_VOTE;
 
 /**
@@ -44,6 +42,9 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @Resource
+    private WebSocketServer webSocketServer;
 
     /**
      * 根据电子书id查询文档列表
@@ -120,31 +121,33 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
 
     /**
      * 点赞接口 基于Redis Set实现
+     *
      * @param id
      */
     @Override
     public Boolean vote(Long id) {
         //获取当前登录用户
-         String userID = LoginUserContext.getUser().getId();
+        String userID = LoginUserContext.getUser().getId();
         //判断是否已经点赞
         String key = USER_VOTE + id;
         Boolean isMember = stringRedisTemplate.opsForSet().isMember(key, userID);
-        if (Boolean.FALSE.equals(isMember)){
+        if (Boolean.FALSE.equals(isMember)) {
             //没有点赞 可以进行点赞了
             boolean isSuccess = update().setSql("vote_count = vote_count + 1")
                     .eq("id", id)
                     .update();
-            if (isSuccess){
+            if (isSuccess) {
                 //点赞成功
                 stringRedisTemplate.opsForSet().add(key, userID);
+                webSocketServer.sendInfo(getById(id).getName() + "被点赞!");
                 return true;
             }
-        }else {
+        } else {
             //已经点赞了
             boolean isSuccess = update().setSql("vote_count = vote_count - 1")
                     .eq("id", id)
                     .update();
-            if (isSuccess){
+            if (isSuccess) {
                 //取消点赞
                 stringRedisTemplate.opsForSet().remove(key, userID);
                 return false;
