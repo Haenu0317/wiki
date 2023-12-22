@@ -34,7 +34,9 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/category/all")
                 .excludePathPatterns("/ebook/list")
                 .excludePathPatterns("/doc/all/**")
+                .excludePathPatterns("/ebook-snapshot/**")
                 .excludePathPatterns("/doc/find-content/**");
+
 
     }
 }

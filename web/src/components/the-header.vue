@@ -72,8 +72,8 @@
 
       // 用来登录
       const loginUser = ref({
-        loginName: "",
-        password: ""
+        loginName: "都是挂件",
+        password: "test123"
       });
       const loginModalVisible = ref(false);
       const loginModalLoading = ref(false);
