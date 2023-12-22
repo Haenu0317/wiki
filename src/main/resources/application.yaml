@@ -12,7 +12,7 @@ spring:
     password: ${haenu.redis.password}
 
   datasource:
-    url: jdbc:mysql://${haenu.db.host}/wiki?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${haenu.db.host}/wiki?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${haenu.db.username}
     password: ${haenu.db.password}
