@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.haenu.wiki.common.result.PageResult;
+import com.haenu.wiki.constant.MQConstant;
 import com.haenu.wiki.domain.dto.DocQueryDTO;
 import com.haenu.wiki.domain.dto.DocSaveDTO;
 import com.haenu.wiki.domain.pojo.Content;
@@ -17,8 +18,10 @@ import com.haenu.wiki.mapper.DocMapperCust;
 import com.haenu.wiki.service.DocService;
 import com.haenu.wiki.service.WebSocketService;
 import com.haenu.wiki.util.LoginUserContext;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -45,6 +48,9 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
 
     @Resource
     private WebSocketService webSocketService;
+
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
 
     /**
      * 根据电子书id查询文档列表
@@ -85,6 +91,7 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
      * @param req
      */
     @Override
+    @Transactional
     public void save(DocSaveDTO req) {
         Doc doc = BeanUtil.copyProperties(req, Doc.class);
         Content content = BeanUtil.copyProperties(req, Content.class);
@@ -140,7 +147,8 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
             if (isSuccess) {
                 //点赞成功
                 stringRedisTemplate.opsForSet().add(key, userID);
-                webSocketService.sendInfo(getById(id).getName() + "被" + LoginUserContext.getUser().getName() + "点赞了");
+                //webSocketService.sendInfo(getById(id).getName() + "被" + LoginUserContext.getUser().getName() + "点赞了");
+                rocketMQTemplate.convertAndSend(MQConstant.WIKI_TOPIC,getById(id).getName() + "被" + LoginUserContext.getUser().getName() + "点赞了");
                 return true;
             }
         } else {
