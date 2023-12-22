@@ -15,8 +15,8 @@ import com.haenu.wiki.mapper.ContentMapper;
 import com.haenu.wiki.mapper.DocMapper;
 import com.haenu.wiki.mapper.DocMapperCust;
 import com.haenu.wiki.service.DocService;
+import com.haenu.wiki.service.WebSocketService;
 import com.haenu.wiki.util.LoginUserContext;
-import com.haenu.wiki.websocket.WebSocketServer;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +44,7 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
     private StringRedisTemplate stringRedisTemplate;
 
     @Resource
-    private WebSocketServer webSocketServer;
+    private WebSocketService webSocketService;
 
     /**
      * 根据电子书id查询文档列表
@@ -125,6 +125,7 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
      * @param id
      */
     @Override
+
     public Boolean vote(Long id) {
         //获取当前登录用户
         String userID = LoginUserContext.getUser().getId();
@@ -139,7 +140,7 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
             if (isSuccess) {
                 //点赞成功
                 stringRedisTemplate.opsForSet().add(key, userID);
-                webSocketServer.sendInfo(getById(id).getName() + "被点赞!");
+                webSocketService.sendInfo(getById(id).getName() + "被" + LoginUserContext.getUser().getName() + "点赞了");
                 return true;
             }
         } else {
@@ -155,6 +156,7 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
         }
         throw new RuntimeException("点赞接口出错");
     }
+
 
     /**
      * 更新电子书信息
