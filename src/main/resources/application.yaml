@@ -17,6 +17,11 @@ spring:
     username: ${haenu.db.username}
     password: ${haenu.db.password}
 
+rocketmq:
+  nameServer: ${haenu.rocketmq.name-server}
+  producer:
+    group: ${haenu.rocketmq.producer-group}
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
