@@ -21,6 +21,9 @@ import com.haenu.wiki.mapper.UserMapper;
 import com.haenu.wiki.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static com.haenu.wiki.common.exception.BusinessExceptionCode.LOGIN_USER_ERROR;
 import static com.haenu.wiki.common.exception.BusinessExceptionCode.USER_LOGIN_NAME_EXIST;
+import static com.haenu.wiki.constant.RedisConstant.LOCK_USER_REGISTER_KEY;
 import static com.haenu.wiki.constant.RedisConstant.TOKEN_PREFIX;
 
 /**
@@ -45,6 +49,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
     private final StringRedisTemplate stringRedisTemplate;
+
+    private final RedissonClient redissonClient;
+
+    private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
+
 
     /**
      * 分页查询用户
@@ -111,24 +120,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public void register(UserSaveDTO req) {
+        //根据布隆过滤器判断用户名是否存在
+        if (!hasUserName(req.getLoginName())) {
+            log.info("用户名已存在，用户名：{}", req.getLoginName());
+            throw new BusinessException(USER_LOGIN_NAME_EXIST);
+        }
+        RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + req.getLoginName());
         User user = new User();
         BeanUtil.copyProperties(req, user);
-        if (req.getId() == null) {
-            LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
-                    .eq(User::getLoginName, req.getLoginName());
-            User userDB = getOne(wrapper);
-            if (userDB != null) {
-                log.info("用户名已存在，用户名：{}", req.getLoginName());
-                throw new BusinessException(USER_LOGIN_NAME_EXIST);
+        try {
+            if (lock.tryLock()) {
+                if (req.getId() == null) {
+                    LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
+                            .eq(User::getLoginName, req.getLoginName());
+                    User userDB = getOne(wrapper);
+
+                    user.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+                    save(user);
+                    userRegisterCachePenetrationBloomFilter.add(req.getLoginName());
+                    return;
+                } else {
+                    LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate(User.class)
+                            .set(req.getPassword() != null, User::getPassword, DigestUtils.md5DigestAsHex(req.getPassword().getBytes()))
+                            .set(req.getName() != null, User::getName, req.getName())
+                            .eq(User::getId, req.getId());
+                    update(wrapper);
+                }
             }
-            user.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
-            save(user);
-        } else {
-            LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate(User.class)
-                    .set(req.getPassword() != null, User::getPassword, DigestUtils.md5DigestAsHex(req.getPassword().getBytes()))
-                    .set(req.getName() != null, User::getName, req.getName())
-                    .eq(User::getId, req.getId());
-            update(wrapper);
+            throw new BusinessException(USER_LOGIN_NAME_EXIST);
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -141,6 +162,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public void logout(String token) {
         stringRedisTemplate.delete(token);
         log.info("从redis中删除token: {}", token);
+    }
+
+    /**
+     * 检查用户名是否存在可用
+     *
+     * @param username
+     * @return true - 可用 false - 不可用
+     */
+    @Override
+    public Boolean hasUserName(String username) {
+        return !userRegisterCachePenetrationBloomFilter.contains(username);
     }
 }
 

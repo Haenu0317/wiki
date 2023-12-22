@@ -48,4 +48,11 @@ public interface UserService extends IService<User> {
      * @param token
      */
     void logout(String token);
+
+    /**
+     * 检查用户名是否可用
+     * @param username 用户名
+     * @return 用户返回信息
+     */
+    Boolean hasUserName(String username);
 }

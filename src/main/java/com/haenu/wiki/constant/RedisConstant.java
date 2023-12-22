@@ -11,5 +11,6 @@ public class RedisConstant {
     public static final String TOKEN_PREFIX = "wiki:";
     public static final String USER_VOTE = "wiki:vote:";
     public static final String CATEGORY_PREFIX = "wiki:category:";
+    public static final String LOCK_USER_REGISTER_KEY = "wiki:lock_user-register:";
 
 }
