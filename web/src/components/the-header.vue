@@ -32,6 +32,9 @@
       <a class="login-menu" v-show="user.id">
         <span>您好：{{user.name}}</span>
       </a>
+      <a class="register-menu" v-show="!user.id" @click="add()">
+        <span>注册</span>
+      </a>
       <a class="login-menu" v-show="!user.id" @click="showLoginModal">
         <span>登录</span>
       </a>
@@ -49,6 +52,25 @@
         </a-form-item>
         <a-form-item label="密码">
           <a-input v-model:value="loginUser.password" type="password" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal
+        title="注册"
+        v-model:visible="modalVisible"
+        :confirm-loading="modalLoading"
+        @ok="handleModalOk"
+    >
+      <a-form :model="registerUser" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+        <a-form-item label="登陆名">
+          <a-input v-model:value="user.loginName" :disabled="!!user.id"/>
+        </a-form-item>
+        <a-form-item label="昵称">
+          <a-input v-model:value="user.name" />
+        </a-form-item>
+        <a-form-item label="密码" v-show="!user.id">
+          <a-input v-model:value="user.password"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -75,12 +97,33 @@
         loginName: "都是挂件",
         password: "test123"
       });
+      const registerUser = ref({
+        loginName: "",
+        name: "",
+        password: ""
+      });
       const loginModalVisible = ref(false);
       const loginModalLoading = ref(false);
+      const modalVisible = ref(false);
+      const modalLoading = ref(false);
+
       const showLoginModal = () => {
         loginModalVisible.value = true;
       };
 
+
+
+      /**
+       * 新增
+       */
+      const add = () => {
+        modalVisible.value = true;
+        registerUser.value = {
+          loginName: "",
+          name: "",
+          password: ""
+        }
+      };
       // 登录
       const login = () => {
         console.log("开始登录");
@@ -115,7 +158,26 @@
         });
       };
 
+      const handleModalOk = () => {
+        modalLoading.value = true;
+        axios.post("/user/save", user.value).then((response) => {
+          modalLoading.value = false;
+          const data = response.data; // data = commonResp
+          if (data.success) {
+            modalVisible.value = false;
+            message.success('注册成功!')
+          } else {
+            message.error(data.message);
+          }
+        });
+      };
+
       return {
+        registerUser,
+        handleModalOk,
+        modalLoading,
+        add,
+        modalVisible,
         loginModalVisible,
         loginModalLoading,
         showLoginModal,
@@ -131,8 +193,8 @@
 <style>
   .logo {
     width: 120px;
-    height: 31px;
-    /*background: rgba(255, 255, 255, 0.2);*/
+    height: 40px;
+    //background: rgba(255, 255, 255, 0.2);
     /*margin: 16px 28px 16px 0;*/
     float: left;
     color: white;
@@ -141,6 +203,11 @@
   .login-menu {
     float: right;
     color: white;
-    padding-left: 10px;
+    padding-left: 20px;
+  }
+  .register-menu {
+    float: right;
+    color: white;
+    padding-left: 40px;
   }
 </style>
