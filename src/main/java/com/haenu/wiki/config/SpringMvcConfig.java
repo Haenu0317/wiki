@@ -1,5 +1,6 @@
 package com.haenu.wiki.config;
 
+import com.haenu.wiki.interceptor.ActionInterceptor;
 import com.haenu.wiki.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,10 +14,15 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     @Resource
     private LoginInterceptor logInterceptor;
 
+    @Resource
+    private ActionInterceptor actionInterceptor;
+
     public void addInterceptors(InterceptorRegistry registry) {
+
         registry.addInterceptor(logInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/user/login")
+                .excludePathPatterns("/user/save")
                 .excludePathPatterns("/doc.html/**")
                 .excludePathPatterns("/doc.html#/**")
                 .excludePathPatterns("/swagger-ui.html")
@@ -31,12 +37,12 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/webjars/**")
                 .excludePathPatterns("/error")
                 .excludePathPatterns("/redis/**")
-                .excludePathPatterns("/category/all")
-                .excludePathPatterns("/ebook/list")
                 .excludePathPatterns("/doc/all/**")
                 .excludePathPatterns("/ebook-snapshot/**")
                 .excludePathPatterns("/doc/find-content/**");
 
+        registry.addInterceptor(actionInterceptor)
+                .addPathPatterns("/user/list", "/category/all", "/ebook/list");
 
     }
 }
