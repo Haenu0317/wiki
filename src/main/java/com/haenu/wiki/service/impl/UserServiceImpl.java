@@ -120,17 +120,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public void register(UserSaveDTO req) {
-        //根据布隆过滤器判断用户名是否存在
-        if (!hasUserName(req.getLoginName())) {
-            log.info("用户名已存在，用户名：{}", req.getLoginName());
-            throw new BusinessException(USER_LOGIN_NAME_EXIST);
-        }
         RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + req.getLoginName());
         User user = new User();
         BeanUtil.copyProperties(req, user);
         try {
             if (lock.tryLock()) {
                 if (req.getId() == null) {
+                    //根据布隆过滤器判断用户名是否存在
+                    if (!hasUserName(req.getLoginName())) {
+                        log.info("用户名已存在，用户名：{}", req.getLoginName());
+                        throw new BusinessException(USER_LOGIN_NAME_EXIST);
+                    }
+
                     LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery(User.class)
                             .eq(User::getLoginName, req.getLoginName());
                     User userDB = getOne(wrapper);
@@ -145,6 +146,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                             .set(req.getName() != null, User::getName, req.getName())
                             .eq(User::getId, req.getId());
                     update(wrapper);
+                    return;
                 }
             }
             throw new BusinessException(USER_LOGIN_NAME_EXIST);
