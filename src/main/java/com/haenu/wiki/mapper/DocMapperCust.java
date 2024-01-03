@@ -4,7 +4,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface DocMapperCust {
 
-    void increaseViewCount(@Param("id") Long id);
+    void increaseViewCount(@Param("id") String id);
 
     /**
      * 定时更新电子书信息

@@ -19,7 +19,7 @@ public interface DocService extends IService<Doc> {
      * 根据电子书id查询文档列表
      * @param ebookId
      */
-    List<DocQueryVO> listByID(Long ebookId);
+    List<DocQueryVO> listByID(String ebookId);
 
     /**
      * 分页查询文档列表
@@ -39,13 +39,13 @@ public interface DocService extends IService<Doc> {
      * @param id
      * @return
      */
-    String findContent(Long id);
+    String findContent(String id);
 
     /**
      * 点赞
      * @param id
      */
-    Boolean vote(Long id);
+    Boolean vote(String id);
 
 
 

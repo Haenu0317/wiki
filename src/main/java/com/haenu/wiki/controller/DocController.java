@@ -32,7 +32,7 @@ public class DocController {
 
     @GetMapping("/all/{ebookId}")
     @ApiOperation("根据电子书id查询文档列表")
-    public Result<List<DocQueryVO>> all(@PathVariable Long ebookId) {
+    public Result<List<DocQueryVO>> all(@PathVariable String ebookId) {
         return Result.success(docService.listByID(ebookId));
     }
 
@@ -59,14 +59,14 @@ public class DocController {
 
     @GetMapping("/find-content/{id}")
     @ApiOperation("查找文档内容")
-    public Result<String> findContent(@PathVariable Long id) {
+    public Result<String> findContent(@PathVariable String id) {
         String content = docService.findContent(id);
         return Result.success(content);
     }
 
     @GetMapping("/vote/{id}")
     @ApiOperation("点赞")
-    public Result<Void> vote(@PathVariable Long id) {
+    public Result<Void> vote(@PathVariable String id) {
         return docService.vote(id) ? Result.success() : Result.error("点赞失败");
     }
 }

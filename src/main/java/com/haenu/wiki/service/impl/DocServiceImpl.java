@@ -58,7 +58,7 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
      * @param ebookId
      */
     @Override
-    public List<DocQueryVO> listByID(Long ebookId) {
+    public List<DocQueryVO> listByID(String ebookId) {
         LambdaQueryWrapper<Doc> wrapper = Wrappers.lambdaQuery(Doc.class)
                 .eq(Doc::getEbookId, ebookId)
                 .orderByAsc(Doc::getSort);
@@ -115,7 +115,7 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
      * @return
      */
     @Override
-    public String findContent(Long id) {
+    public String findContent(String id) {
         Content content = contentMapper.selectById(id);
         //文档阅读数增加
         docMapperCust.increaseViewCount(id);
@@ -133,7 +133,7 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc>
      */
     @Override
 
-    public Boolean vote(Long id) {
+    public Boolean vote(String id) {
         //获取当前登录用户
         String userID = LoginUserContext.getUser().getId();
         //判断是否已经点赞
