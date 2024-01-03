@@ -9,13 +9,13 @@
       <a-menu-item key="/">
         <router-link to="/">首页</router-link>
       </a-menu-item>
-      <a-menu-item key="/admin/user" :style="user.id? {} : {display:'none'}">
+      <a-menu-item key="/admin/user" :style="user.loginName==='都是挂件'? {} : {display:'none'}">
         <router-link to="/admin/user">用户管理</router-link>
       </a-menu-item>
-      <a-menu-item key="/admin/ebook" :style="user.id? {} : {display:'none'}">
+      <a-menu-item key="/admin/ebook" :style="user.loginName==='都是挂件'? {} : {display:'none'}">
         <router-link to="/admin/ebook">电子书管理</router-link>
       </a-menu-item>
-      <a-menu-item key="/admin/category" :style="user.id? {} : {display:'none'}">
+      <a-menu-item key="/admin/category" :style="user.loginName==='都是挂件'? {} : {display:'none'}">
         <router-link to="/admin/category">分类管理</router-link>
       </a-menu-item>
 
@@ -70,7 +70,7 @@
           <a-input v-model:value="user.name" />
         </a-form-item>
         <a-form-item label="密码" v-show="!user.id">
-          <a-input v-model:value="user.password"/>
+          <a-input v-model:value="user.password" type="password"/>
         </a-form-item>
       </a-form>
     </a-modal>

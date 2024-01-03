@@ -23,6 +23,9 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/user/login")
                 .excludePathPatterns("/user/save")
+                .excludePathPatterns("/category/all")
+                .excludePathPatterns("/ebook/list")
+                .excludePathPatterns("/doc/all/**")
                 .excludePathPatterns("/doc.html/**")
                 .excludePathPatterns("/doc.html#/**")
                 .excludePathPatterns("/swagger-ui.html")
@@ -41,8 +44,6 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/ebook-snapshot/**")
                 .excludePathPatterns("/doc/find-content/**");
 
-        registry.addInterceptor(actionInterceptor)
-                .addPathPatterns("/user/list", "/category/all", "/ebook/list");
 
     }
 }
